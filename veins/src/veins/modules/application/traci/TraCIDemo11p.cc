@@ -61,7 +61,7 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
         // save received broadcast
         DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl());
 
-        // pablo deshabilito reroute para que no recalcule ruta y los nodos desaparezcan
+        //  ENABLE/DISABLE vehicles rerouting during simulation. See omnetpp.ini
         if (reroute){
             if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
         }
