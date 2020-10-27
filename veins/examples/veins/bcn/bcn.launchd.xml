@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- debug config -->
+<launch>
+    <copy file="bcn.net.xml" />
+    <copy file="bcn.rou.xml" />
+    <copy file="bcn.poly.xml" />
+    <copy file="bcn.sumo.cfg" type="config" />
+    <basedir path="/root/git/veins/veins/examples/veins/bcn/" />  <!-- SUMO files directory -->
+</launch>
+
