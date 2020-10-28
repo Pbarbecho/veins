@@ -138,7 +138,7 @@ protected:
     *
     * @param msg the message to be checked and tracked
      */
-    virtual void controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time);
+    virtual void controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute);
     /**
     * @brief helper function for add random fossil fuel vehicles
     *
@@ -211,6 +211,7 @@ protected:
 
     /* reroute */
     bool reroute;
+    bool Route_updated;
     bool TrafficService;
     simtime_t AccidentStart;
     simtime_t InterTrafficMessage;

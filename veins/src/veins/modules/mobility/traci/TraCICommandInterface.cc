@@ -132,7 +132,6 @@ std::pair<TraCICoord, TraCICoord> TraCICommandInterface::initNetworkBoundaries(i
 }
 
 
-//PABLO return active vehicles in sim
 int32_t TraCICommandInterface::getactivevehicles() {
     return genericGetInt(CMD_GET_SIM_VARIABLE, "", VAR_MIN_EXPECTED_VEHICLES, RESPONSE_GET_SIM_VARIABLE);
 }

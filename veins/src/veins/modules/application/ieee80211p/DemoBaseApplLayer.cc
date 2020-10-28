@@ -339,23 +339,36 @@ void DemoBaseApplLayer::checkAndTrackPacket(cMessage* msg)
     }
 }
 
-void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time)
+void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute)
 {
-    // node position
+    // node name (node or rsu)
+    std::string node_name = getParentModule()->getName();
+    // node ID
+    int node_index = findHost()->getIndex();
+    //node position
     Coord n_pos = mobility->getPositionAt(simTime());
     double pos_x = n_pos.x;
     double pos_y = n_pos.y;
-    // node name (node or rsu)
-    std::string node_name = getParentModule()->getName();
-    //if (node_name == "node"){node_speed = mobility->getSpeed();}
+    // vehicles speed
+    int node_speed = 0;
+    if (node_name == "node"){node_speed = mobility->getSpeed();}
+
     // save msg info into a file
     controlfile.open(filename, std::ios::out | std::ios::app);
 
-    int node_index = findHost()->getIndex();
+    //save node parameters in msg
     if (controlfile.is_open()){
-        // e.g. msg treeID ! bitlength ! CHnumber ! time
-        // node/rsu - ID - tx/rx - RecAddres - PositionX - PositionY - MsgId - CHnum - MsgTime - CurTime
-        controlfile <<node_name<<','<< node_index <<','<<tx_rx_bsm<<','<<frame->getRecipientAddress()<<','<<pos_x<<','<<pos_y<<','<<frame->getTreeId()<<','<<frame->getChannelNumber()<<','<<s_time<<'\n';
+        // node/rsu - ID - tx/rx - RecAddres - PositionX - PositionY - MsgId - CHnum - MsgTime - Nodespeed
+        controlfile <<node_name<<','
+                    << node_index <<','
+                    <<tx_rx_bsm<<','
+                    <<frame->getRecipientAddress()<<','
+                    <<pos_x<<','
+                    <<pos_y<<','
+                    <<frame->getTreeId()<<','
+                    <<frame->getChannelNumber()<<','
+                    <<reroute<<','<<node_speed<<','
+                    <<s_time<<'\n';
         controlfile.close();
     }else {
         EV_WARN << "APP: Error: controlfile can not be open: " << endl;

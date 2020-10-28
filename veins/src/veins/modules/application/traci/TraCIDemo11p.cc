@@ -35,6 +35,7 @@ void TraCIDemo11p::initialize(int stage)
         sentMessage = false;
         lastDroveAt = simTime();
         currentSubscribedServiceId = -1;
+        Route_updated = false;
     }
 }
 
@@ -53,24 +54,29 @@ void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
 void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 {
 
-    if (findHost()->getIndex() != 0 ){  //evita que el nodo accidentado envie un broadcast
+    if (findHost()->getIndex() != 0 ){  //accident node don't forward msg
 
         TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
         findHost()->getDisplayString().setTagArg("i", 1, "green");
 
-        // save received broadcast
-        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl());
-
         //  ENABLE/DISABLE vehicles rerouting during simulation. See omnetpp.ini
-        if (reroute){
+
+        if (reroute && !Route_updated){
+            std::list<std::string> route_before = traciVehicle->getPlannedRoadIds();
+            //for (std::list<std::string>::iterator i = route.begin(); i != route.end(); ++i) {std::cout << ' ' << *i;}
             if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
+            std::list<std::string> route_after = traciVehicle->getPlannedRoadIds();
+            if (route_before.size() != route_after.size()){Route_updated = true;}
         }
+        // Metrics capturing //
+        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated);
 
         if (!sentMessage) {
             sentMessage = true;
             // repeat the received traffic update once in 2 seconds plus some random delay
+            // se puede probar variando los 2 seconds a ver como reacciona
             wsm->setSenderAddress(myId);
-            wsm->setSerial(3);  //set serial to 3 para que no se reenvie el broadcadtst
+            wsm->setSerial(2);  //set serial to 3 para que contar msg enviados
             simtime_t s_time = simTime() + 2 + uniform(0.01, 0.2);
             scheduleAt(s_time, wsm->dup());
         }
@@ -84,20 +90,18 @@ void TraCIDemo11p::handleSelfMsg(cMessage* msg)
         // this code only runs when channel switching is enabled
 
        sendDown(wsm->dup());
-       // METRIC //
-       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl());        // send accident msg
+       // Metrics capturing //
+       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated);        // send accident msg parameters
 
-       if (findHost()->getIndex() == 0){
-           wsm->setSerial(1);
-       }else{
-           wsm->setSerial(wsm->getSerial() + 1);
-       }
+       if (findHost()->getIndex() == 0){wsm->setSerial(1);}
+       else{wsm->setSerial(wsm->getSerial() + 1);}
 
        if (wsm->getSerial() > 1) { // send just 1 msg
             // stop service advertisements
             stopService();
             delete (wsm);
         }
+        // If more than one msg is required enable:
         //else {
         //    simtime_t send_msg_time = simTime() + InterTrafficMessage;
         //    scheduleAt(send_msg_time, wsm);
