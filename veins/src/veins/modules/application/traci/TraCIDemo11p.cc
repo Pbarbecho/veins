@@ -76,7 +76,7 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
             // repeat the received traffic update once in 2 seconds plus some random delay
             // se puede probar variando los 2 seconds a ver como reacciona
             wsm->setSenderAddress(myId);
-            wsm->setSerial(2);  //set serial to 3 para que contar msg enviados
+            wsm->setSerial(1);  //set serial to 3 para que contar msg enviados
             simtime_t s_time = simTime() + 2 + uniform(0.01, 0.2);
             scheduleAt(s_time, wsm->dup());
         }
@@ -93,8 +93,10 @@ void TraCIDemo11p::handleSelfMsg(cMessage* msg)
        // Metrics capturing //
        DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated);        // send accident msg parameters
 
-       if (findHost()->getIndex() == 0){wsm->setSerial(1);}
-       else{wsm->setSerial(wsm->getSerial() + 1);}
+       //if (findHost()->getIndex() == 0){wsm->setSerial(1);}
+       //else{wsm->setSerial(wsm->getSerial() + 1);}
+
+       wsm->setSerial(wsm->getSerial() + 1);
 
        if (wsm->getSerial() > 1) { // send just 1 msg
             // stop service advertisements

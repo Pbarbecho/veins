@@ -367,7 +367,8 @@ void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx
                     <<pos_y<<','
                     <<frame->getTreeId()<<','
                     <<frame->getChannelNumber()<<','
-                    <<reroute<<','<<node_speed<<','
+                    <<reroute<<','
+                    <<node_speed<<','
                     <<s_time<<'\n';
         controlfile.close();
     }else {
