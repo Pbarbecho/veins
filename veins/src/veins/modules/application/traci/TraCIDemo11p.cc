@@ -68,8 +68,14 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
             std::list<std::string> route_after = traciVehicle->getPlannedRoadIds();
             if (route_before.size() != route_after.size()){Route_updated = true;}
         }
+
+        // Hop count //
+        wsm->setHops(wsm->getHops()+1);
+        int hops = wsm->getHops();
+        //std::cout<<findHost()->getIndex() <<' '<< wsm->getHops()<<'\n';
+
         // Metrics capturing //
-        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated);
+        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated, hops);
 
         if (!sentMessage) {
             sentMessage = true;
@@ -91,7 +97,7 @@ void TraCIDemo11p::handleSelfMsg(cMessage* msg)
 
        sendDown(wsm->dup());
        // Metrics capturing //
-       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated);        // send accident msg parameters
+       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated, 1);        // send accident msg parameters
 
        //if (findHost()->getIndex() == 0){wsm->setSerial(1);}
        //else{wsm->setSerial(wsm->getSerial() + 1);}

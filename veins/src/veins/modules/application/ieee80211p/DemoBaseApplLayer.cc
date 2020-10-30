@@ -339,7 +339,7 @@ void DemoBaseApplLayer::checkAndTrackPacket(cMessage* msg)
     }
 }
 
-void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute)
+void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute, int hops)
 {
     // node name (node or rsu)
     std::string node_name = getParentModule()->getName();
@@ -369,6 +369,7 @@ void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx
                     <<frame->getChannelNumber()<<','
                     <<reroute<<','
                     <<node_speed<<','
+                    <<hops<<','
                     <<s_time<<'\n';
         controlfile.close();
     }else {
