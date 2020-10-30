@@ -51,6 +51,14 @@ void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
     }
 }
 
+double TraCIDemo11p::OnMapDistance(Coord accident_node_position){
+    // Node distance from  current node to accident node
+    Coord curr_node_position = mobility->getPositionAt(simTime());
+    double sumo_distance = traci->getDistance(curr_node_position, accident_node_position, true); //true -> return driving distance on map
+    return sumo_distance;
+}
+
+
 void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 {
 
@@ -60,6 +68,9 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
         findHost()->getDisplayString().setTagArg("i", 1, "green");
 
         //  ENABLE/DISABLE vehicles rerouting during simulation. See omnetpp.ini
+
+        // Actualizo distancia antes de que modifique la ruta
+        double sumo_distance = OnMapDistance(wsm->getAccident());
 
         if (reroute && !Route_updated){
             std::list<std::string> route_before = traciVehicle->getPlannedRoadIds();
@@ -72,10 +83,10 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
         // Hop count //
         wsm->setHops(wsm->getHops()+1);
         int hops = wsm->getHops();
-        //std::cout<<findHost()->getIndex() <<' '<< wsm->getHops()<<'\n';
+
 
         // Metrics capturing //
-        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated, hops);
+        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated, hops, sumo_distance);
 
         if (!sentMessage) {
             sentMessage = true;
@@ -83,7 +94,8 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
             // se puede probar variando los 2 seconds a ver como reacciona
             wsm->setSenderAddress(myId);
             wsm->setSerial(1);  //set serial to 3 para que contar msg enviados
-            simtime_t s_time = simTime() + 2 + uniform(0.01, 0.2);
+            //simtime_t s_time = simTime() + 2 + uniform(0.01, 0.2);
+            simtime_t s_time = simTime() + 0.5 + uniform(0.1, 2.6); //2s max
             scheduleAt(s_time, wsm->dup());
         }
     }
@@ -97,7 +109,7 @@ void TraCIDemo11p::handleSelfMsg(cMessage* msg)
 
        sendDown(wsm->dup());
        // Metrics capturing //
-       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated, 1);        // send accident msg parameters
+       DemoBaseApplLayer::controlMessage(wsm, "tx", simTime().dbl(), Route_updated, 1, OnMapDistance(wsm->getAccident()));        // send accident msg parameters
 
        //if (findHost()->getIndex() == 0){wsm->setSerial(1);}
        //else{wsm->setSerial(wsm->getSerial() + 1);}
@@ -132,7 +144,9 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)     // Update nodes positi
                 TraCIDemo11pMessage* wsm = new TraCIDemo11pMessage();
                 populateWSM(wsm);
                 wsm->setDemoData(mobility->getRoadId().c_str());
-
+                Coord host_location = curPosition;
+                // add current node position
+                wsm->setAccident(mobility->getPositionAt(simTime()));
                 // host is standing still due to crash
 
                 if (dataOnSch) {

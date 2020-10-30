@@ -173,6 +173,7 @@ void DemoBaseApplLayer::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId
         bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
         wsm->setUserPriority(beaconUserPriority);
+
     }
     else if (DemoServiceAdvertisment* wsa = dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
         wsa->setChannelNumber(static_cast<int>(Channel::cch));
@@ -187,6 +188,7 @@ void DemoBaseApplLayer::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId
             wsm->setChannelNumber(static_cast<int>(Channel::cch));
         wsm->addBitLength(dataLengthBits);
         wsm->setUserPriority(dataUserPriority);
+
     }
 }
 
@@ -339,7 +341,7 @@ void DemoBaseApplLayer::checkAndTrackPacket(cMessage* msg)
     }
 }
 
-void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute, int hops)
+void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute, int hops, double sumo_distance)
 {
     // node name (node or rsu)
     std::string node_name = getParentModule()->getName();
@@ -370,6 +372,7 @@ void DemoBaseApplLayer::controlMessage(BaseFrame1609_4* frame, std::string tx_rx
                     <<reroute<<','
                     <<node_speed<<','
                     <<hops<<','
+                    <<sumo_distance<<','
                     <<s_time<<'\n';
         controlfile.close();
     }else {

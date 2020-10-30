@@ -138,7 +138,7 @@ protected:
     *
     * @param msg the message to be checked and tracked
      */
-    virtual void controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute, int hops);
+    virtual void controlMessage(BaseFrame1609_4* frame, std::string tx_rx_bsm, double s_time, bool reroute, int hops, double sumo_distance);
     /**
     * @brief helper function for add random fossil fuel vehicles
     *
@@ -157,6 +157,7 @@ protected:
     * @param max number to random number
     */
     virtual int RandomNumber();
+
 
 protected:
     /* pointers ill be set when used with TraCIMobility */

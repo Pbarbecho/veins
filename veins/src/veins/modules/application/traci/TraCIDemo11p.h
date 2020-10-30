@@ -55,6 +55,7 @@ protected:
 
     void handleSelfMsg(cMessage* msg) override;
     void handlePositionUpdate(cObject* obj) override;
+    double OnMapDistance(Coord accident_node_position);
     //void controlMessage(BaseFrame1609_4* wsm, std::string tx_rx_bsm, double s_time);
 };
 
