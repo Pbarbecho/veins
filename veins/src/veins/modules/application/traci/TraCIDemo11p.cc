@@ -66,16 +66,18 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 
         TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
         findHost()->getDisplayString().setTagArg("i", 1, "green");
-
-        //  ENABLE/DISABLE vehicles rerouting during simulation. See omnetpp.ini
-
         // Actualizo distancia antes de que modifique la ruta
         double sumo_distance = OnMapDistance(wsm->getAccident());
-
+        //  ENABLE/DISABLE vehicles rerouting during simulation. See omnetpp.ini
         if (reroute && !Route_updated){
             std::list<std::string> route_before = traciVehicle->getPlannedRoadIds();
-            //for (std::list<std::string>::iterator i = route.begin(); i != route.end(); ++i) {std::cout << ' ' << *i;}
-            if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
+            for (std::list<std::string>::iterator i = route_before.begin(); i != route_before.end(); ++i){
+                std::string iter = *i;
+                if (iter == wsm->getDemoData()){ //if accident road is in current vehicles route change route
+                    if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
+                    break;
+                }
+            }
             std::list<std::string> route_after = traciVehicle->getPlannedRoadIds();
             if (route_before.size() != route_after.size()){Route_updated = true;}
         }
