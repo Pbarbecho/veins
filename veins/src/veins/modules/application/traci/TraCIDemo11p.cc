@@ -61,9 +61,7 @@ double TraCIDemo11p::OnMapDistance(Coord accident_node_position){
 
 void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 {
-
     if (findHost()->getIndex() != 0 ){  //accident node don't forward msg
-
         TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
         findHost()->getDisplayString().setTagArg("i", 1, "green");
         // Actualizo distancia antes de que modifique la ruta
