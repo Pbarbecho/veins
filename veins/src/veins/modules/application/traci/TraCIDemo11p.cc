@@ -84,18 +84,17 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
         wsm->setHops(wsm->getHops()+1);
         int hops = wsm->getHops();
 
-
-        // Metrics capturing //
-        DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated, hops, sumo_distance);
-
         if (!sentMessage) {
             sentMessage = true;
+            // Metrics capturing //
+            DemoBaseApplLayer::controlMessage(wsm, "rx", simTime().dbl(), Route_updated, hops, sumo_distance);
+
             // repeat the received traffic update once in 2 seconds plus some random delay
             // se puede probar variando los 2 seconds a ver como reacciona
             wsm->setSenderAddress(myId);
             wsm->setSerial(1);  //set serial to 3 para que contar msg enviados
             //simtime_t s_time = simTime() + 2 + uniform(0.01, 0.2);
-            simtime_t s_time = simTime() + 0.5 + uniform(0.1, 2.6); //2s max
+            simtime_t s_time = simTime() + 0.4 + uniform(0.1, 0.6); //1s max
             scheduleAt(s_time, wsm->dup());
         }
     }
