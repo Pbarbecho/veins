@@ -60,7 +60,7 @@ simple DemoBaseApplLayer like IBaseApplLayer
 		double AccidentStart =  default(100s) @unit(s);
 		double InterTrafficMessage =  default(100s) @unit(s);
 		int NumberofVehicles = default(5); 	//max number of routes
-	
+		
     gates:
         input lowerLayerIn; // from mac layer
         output lowerLayerOut; // to mac layer

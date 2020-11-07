@@ -43,5 +43,6 @@ simple TraCIScenarioManagerLaunchd extends TraCIScenarioManager
     parameters:
         @class(veins::TraCIScenarioManagerLaunchd);
         xml launchConfig; // launch configuration to send to sumo-launchd.py
+        
 }
 

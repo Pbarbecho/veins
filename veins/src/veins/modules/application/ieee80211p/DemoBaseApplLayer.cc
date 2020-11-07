@@ -86,6 +86,7 @@ void DemoBaseApplLayer::initialize(int stage)
         TrafficService = par("TrafficService").boolValue();
         AccidentStart = par("AccidentStart");
         InterTrafficMessage = par("InterTrafficMessage");
+
     }
     else if (stage == 1) {
 
@@ -393,9 +394,10 @@ void DemoBaseApplLayer::Add_FFV(int vehID){
 }
 
 int DemoBaseApplLayer::RandomNumber(){
-    std::random_device rd;
-    std::mt19937 e2(rd());
-    std::uniform_real_distribution<> dist(0, NumberofVehicles);
-    int randomnumber = floor(dist(e2));
+    //std::random_device rd;
+    //std::mt19937 e2(rd());
+    //std::uniform_real_distribution<> dist(0, NumberofVehicles);
+    //int randomnumber = floor(dist(e2));
+    int randomnumber = rand() % NumberofVehicles;
     return randomnumber;
 }
